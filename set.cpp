@@ -1,11 +1,9 @@
 #include "set.hpp"
-#include <iostream>
 using namespace std;
 
 Set::Set() { };
 
-Set::Set(std::initializer_list<Set*> l): s(l) {
-  cout << "set({...})" << endl;
+Set::Set(std::initializer_list<shared_ptr<Set>> l): s(l) {
 }
 
 Set::Set(const Set& rhs) { cout << "copy" << endl; };
@@ -20,15 +18,29 @@ size_t Set::size() const {
   return s.size();
 }
 
-Set* Set::copy() {
-  Set* cpy = new Set();
+bool Set::operator==(const Set& rhs) const {
+  if (rhs.size() != size()) return false;
+  for (const std::shared_ptr<Set> subset: s) {
+    if (!rhs.has(subset)) return false;
+  }
+  return true;
+}
+bool Set::has(const shared_ptr<Set> subset) const {
+  for (const std::shared_ptr<Set> this_set: s) {
+    if (*this_set == *subset) return true;
+  }
+  return false;
+}
+
+shared_ptr<Set> Set::copy() {
+  shared_ptr<Set> cpy = shared_ptr<Set>(new Set());
   cpy->s = s;
   return cpy;
 }
 
 void Set::print(ostream& os) const {
   os << "{";
-  for (Set* set: s) {
+  for (shared_ptr<Set> set: s) {
     set->print(os);
   }
   os << "}";

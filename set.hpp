@@ -3,40 +3,27 @@
 #include <vector>
 #include <initializer_list>
 #include <iostream>
+#include <memory>
 
 class Set {
 private:
 public:
-  std::vector<Set*> s;
+  std::vector<std::shared_ptr<Set>> s;
   Set();
-  Set(std::initializer_list<Set*>);
+  Set(std::initializer_list<std::shared_ptr<Set>>);
   Set(const Set& rhs);
   Set(Set&& rhs);
-  Set* copy();
+  std::shared_ptr<Set> copy();
   bool empty();
   size_t size() const;
-  bool operator==(const Set& rhs) const {
-    if (rhs.size() != size()) return false;
-    for (const Set* subset: s) {
-      if (!rhs.has(subset)) return false;
-    }
-    return true;
-  }
-  bool has(const Set* subset) const {
-    for (const Set* this_set: s) {
-      if (*this_set == *subset) return true;
-    }
-    return false;
-  }
+  bool operator==(const Set& rhs) const;
+  bool has(const std::shared_ptr<Set>) const;
   void print(std::ostream& os) const;
-
   friend std::ostream& operator<<(std::ostream& os, const Set& s) {
     s.print(os);
     return os;
   }
 };
-
-
 
 class Nat : public Set {
 private:
