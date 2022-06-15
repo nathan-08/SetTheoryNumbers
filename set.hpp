@@ -6,9 +6,9 @@
 #include <memory>
 
 class Set {
-private:
-public:
+protected:
   std::vector<std::shared_ptr<Set>> s;
+public:
   Set();
   Set(std::initializer_list<std::shared_ptr<Set>>);
   Set(const Set& rhs);
